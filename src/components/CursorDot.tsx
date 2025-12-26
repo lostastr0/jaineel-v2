@@ -10,15 +10,23 @@ export default function CursorDot() {
   const raf = useRef<number | null>(null);
 
   useEffect(() => {
+    // ⛔ Disable on touch devices (mobile / tablet)
+    if (
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0)
+    ) {
+      return;
+    }
+
     const dot = dotRef.current;
     if (!dot) return;
 
     /**
      * 🔧 TUNING
      */
-    const OFFSET_X = 22;   // right of cursor
-    const OFFSET_Y = 33;   // below cursor (feels “floaty”)
-    const EASE = 0.1;      // lower = more lag / float
+    const OFFSET_X = 22; // right of cursor
+    const OFFSET_Y = 33; // below cursor
+    const EASE = 0.1; // lower = more lag / float
 
     const onMove = (e: MouseEvent) => {
       target.current.x = e.clientX + OFFSET_X;
@@ -59,9 +67,9 @@ export default function CursorDot() {
       className="
         pointer-events-none fixed left-0 top-0 z-[60]
         h-3 w-3 rounded-full
-        bg-emerald-400
+        bg-sky-400
         opacity-90
-        shadow-[0_0_20px_rgba(16,185,129,0.55)]
+        shadow-[0_0_20px_rgba(56,189,248,0.55)]
       "
     />
   );

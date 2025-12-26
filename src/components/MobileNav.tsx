@@ -1,53 +1,104 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useActiveSection } from "@/hooks/useActiveSection";
+import {
+  HiOutlineMenuAlt2,
+  HiOutlineSearch,
+  HiOutlineMoon,
+  HiOutlineX,
+  HiOutlineHome,
+  HiOutlineFolder,
+  HiOutlineUser,
+  HiOutlineMail,
+  HiOutlineDocumentText,
+  HiOutlineCube,
+  HiOutlineLightningBolt,
+} from "react-icons/hi";
 
-export default function MobileNav({
-  open,
-  setOpen,
-}: {
+type Props = {
   open: boolean;
   setOpen: (v: boolean) => void;
+};
+
+const NAV = [
+  { label: "Home", href: "#top", id: "top", Icon: HiOutlineHome },
+  { label: "Works", href: "#projects", id: "projects", Icon: HiOutlineFolder },
+  { label: "About", href: "#about", id: "about", Icon: HiOutlineUser },
+  { label: "Contact", href: "#contact", id: "contact", Icon: HiOutlineMail },
+];
+
+const RESOURCES = [
+  { label: "Notes", href: "#writeups", id: "writeups", Icon: HiOutlineDocumentText },
+  { label: "Journey", href: "#stack", id: "stack", Icon: HiOutlineCube },
+];
+
+function NavRow({
+  label,
+  href,
+  Icon,
+  active,
+  onClick,
+}: {
+  label: string;
+  href: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  active: boolean;
+  onClick: () => void;
 }) {
+  return (
+    <a
+      href={href}
+      onClick={onClick}
+      className={[
+        "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition",
+        active
+          ? "bg-white/10 text-white"
+          : "text-zinc-300 hover:bg-white/[0.04] hover:text-white",
+      ].join(" ")}
+    >
+      <Icon className="h-5 w-5 text-white/70" />
+      <span className="font-medium">{label}</span>
+      {active && (
+        <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.6)]" />
+      )}
+    </a>
+  );
+}
+
+export default function MobileNav({ open, setOpen }: Props) {
+  const activeSection = useActiveSection([
+    "top",
+    "projects",
+    "about",
+    "contact",
+    "writeups",
+    "stack",
+  ]);
+
   return (
     <div className="xl:hidden">
       {/* TOPBAR */}
-      <div className="fixed left-0 right-0 top-0 z-50 pointer-events-none">
-        <div className="px-4 pt-4 pointer-events-auto">
-          <div className="rounded-2xl border border-white/10 bg-black/30 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
-            <div className="flex items-center justify-between px-3 py-2">
-              {/* Avatar */}
-              <button
-                onClick={() => setOpen(true)}
-                className="h-11 w-11 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
-                aria-label="Open menu"
-              />
+      <div className="fixed left-0 right-0 top-0 z-50 px-4 pt-4">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl px-3 py-2 flex items-center justify-between">
+          <button
+            onClick={() => setOpen(true)}
+            className="h-11 w-11 rounded-full bg-gradient-to-br from-sky-500 to-blue-600"
+          />
 
-              {/* Icons */}
-              <div className="flex items-center gap-2">
-                <button
-                  className="h-11 w-11 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                  aria-label="Search"
-                >
-                  🔍
-                </button>
-                <button
-                  className="h-11 w-11 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                  aria-label="Theme"
-                >
-                  🌙
-                </button>
-                <button
-                  onClick={() => setOpen(true)}
-                  className="h-11 w-11 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                  aria-label="Menu"
-                >
-                  ☰
-                </button>
-              </div>
-            </div>
-
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+          <div className="flex items-center gap-2">
+            <button className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.03] grid place-items-center">
+              <HiOutlineSearch className="h-5 w-5 text-white/70" />
+            </button>
+            <button className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.03] grid place-items-center">
+              <HiOutlineMoon className="h-5 w-5 text-white/70" />
+            </button>
+            <button
+              onClick={() => setOpen(true)}
+              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.03] grid place-items-center"
+            >
+              <HiOutlineMenuAlt2 className="h-6 w-6 text-white/80" />
+            </button>
           </div>
         </div>
       </div>
@@ -56,68 +107,73 @@ export default function MobileNav({
       <AnimatePresence>
         {open && (
           <>
-            <motion.button
+            <motion.div
               className="fixed inset-0 z-40 bg-black/60"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              aria-label="Close overlay"
             />
 
             <motion.aside
-              className="fixed left-4 top-4 bottom-4 z-50 w-[280px] rounded-3xl border border-white/10 bg-zinc-950/70 backdrop-blur p-4 shadow-[0_20px_80px_rgba(0,0,0,0.65)]"
-              initial={{ x: -30, opacity: 0 }}
+              className="fixed left-4 top-4 bottom-4 z-50 w-[300px] rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4"
+              initial={{ x: -28, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -30, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              exit={{ x: -28, opacity: 0 }}
             >
-              <div className="flex items-center justify-between">
-                <div className="text-sm font-semibold">LostAstr0</div>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="h-9 w-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                  aria-label="Close menu"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="mt-4 text-xs text-zinc-400">NAV</div>
-              <nav className="mt-2 space-y-1">
-                {["Home", "Projects", "About", "Contact"].map((t) => (
-                  <a
-                    key={t}
-                    href={t === "Home" ? "#" : `#${t.toLowerCase()}`}
+              <div className="flex h-full flex-col">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-600" />
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-white">
+                      Jaineel
+                    </div>
+                    <div className="text-xs text-zinc-400">
+                      Open for opportunities
+                    </div>
+                  </div>
+                  <button
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
+                    className="ml-auto h-9 w-9 rounded-full border border-white/10 grid place-items-center"
                   >
-                    {t} <span className="text-zinc-500">↗</span>
-                  </a>
-                ))}
-              </nav>
+                    <HiOutlineX className="h-5 w-5 text-white/80" />
+                  </button>
+                </div>
 
-              <div className="mt-6 text-xs text-zinc-400">RESOURCES</div>
-              <nav className="mt-2 space-y-1">
-                {["Writeups", "Stack"].map((t) => (
-                  <a
-                    key={t}
-                    href={`#${t.toLowerCase()}`}
+                <div className="my-4 h-px bg-white/10" />
+
+                {NAV.map((item) => (
+                  <NavRow
+                    key={item.label}
+                    {...item}
+                    active={activeSection === item.id}
                     onClick={() => setOpen(false)}
-                    className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-200 hover:bg-white/5"
-                  >
-                    {t} <span className="text-zinc-500">↗</span>
-                  </a>
+                  />
                 ))}
-              </nav>
 
-              <div className="mt-auto pt-6">
+                <div className="mt-5 text-xs uppercase tracking-wider text-zinc-500">
+                  Resources
+                </div>
+
+                {RESOURCES.map((item) => (
+                  <NavRow
+                    key={item.label}
+                    {...item}
+                    active={activeSection === item.id}
+                    onClick={() => setOpen(false)}
+                  />
+                ))}
+
+                <div className="flex-1" />
+
                 <a
                   href="#contact"
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold hover:bg-white/10 transition"
+                  className="mt-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 py-3 text-sm font-semibold text-black text-center"
                 >
-                  Get in touch <span>⚡</span>
+                  <span className="inline-flex items-center gap-2 justify-center">
+                    <HiOutlineLightningBolt /> Get in touch
+                  </span>
                 </a>
               </div>
             </motion.aside>

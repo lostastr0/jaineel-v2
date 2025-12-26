@@ -1,119 +1,168 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { useActiveSection } from "@/hooks/useActiveSection";
+import {
+  HiOutlineHome,
+  HiOutlineFolder,
+  HiOutlineUser,
+  HiOutlineMail,
+  HiOutlineDocumentText,
+  HiOutlineCube,
+  HiOutlineLogin,
+  HiOutlineLightningBolt,
+  HiOutlineMoon,
+  HiOutlineSearch,
+} from "react-icons/hi";
 
-const nav = [
-  { label: "Home", href: "#top" },
-  { label: "Projects", href: "#projects" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-];
-
-const resources = [
-  { label: "Writeups", href: "#writeups" },
-  { label: "Stack", href: "#stack" },
-];
-
-type Props = {
-  variant?: "fixed" | "drawer";
-  onClose?: () => void;
+type NavItem = {
+  label: string;
+  href: string;
+  id?: "top" | "projects" | "about" | "contact" | "writeups" | "stack";
+  icon: React.ReactNode;
 };
 
-export default function Sidebar({ variant = "fixed", onClose }: Props) {
-  const Wrapper =
-    variant === "fixed" ? "aside" : ("div" as unknown as "aside");
+const MAIN_NAV: NavItem[] = [
+  { label: "Home", href: "#top", id: "top", icon: <HiOutlineHome /> },
+  { label: "Works", href: "#projects", id: "projects", icon: <HiOutlineFolder /> },
+  { label: "About", href: "#about", id: "about", icon: <HiOutlineUser /> },
+  { label: "Contact", href: "#contact", id: "contact", icon: <HiOutlineMail /> },
+];
 
-  const wrapperClass =
-    variant === "fixed"
-      ? "fixed left-0 top-0 h-screen w-[280px] p-4 hidden lg:block"
-      : "h-full w-full p-4";
+const RESOURCES_NAV: NavItem[] = [
+  { label: "Notes", href: "#writeups", id: "writeups", icon: <HiOutlineDocumentText /> },
+  { label: "Journey", href: "#stack", id: "stack", icon: <HiOutlineCube /> },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const activeSection = useActiveSection([
+    "top",
+    "projects",
+    "about",
+    "contact",
+    "writeups",
+    "stack",
+  ]);
+
+  const isHome = pathname === "/";
 
   return (
-    <Wrapper className={wrapperClass}>
-      <div className="h-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur px-4 py-5">
-        {/* header row */}
+    <aside
+      className="
+        h-full w-full rounded-3xl
+        border border-white/10
+        bg-gradient-to-b from-white/[0.04] to-white/[0.02]
+        backdrop-blur-xl
+        shadow-[0_20px_60px_rgba(0,0,0,0.6)]
+        flex flex-col
+      "
+    >
+      {/* PROFILE */}
+      <div className="px-6 pt-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-white/80 to-white/20" />
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-sky-400 to-blue-600" />
           <div className="min-w-0">
-            <div className="text-sm font-semibold leading-tight truncate">
-              LostAstr0
+            <div className="truncate text-sm font-semibold text-white">
+              Jaineel
             </div>
-            <div className="text-xs text-zinc-400 truncate">
-              open for opportunities
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              Open for opportunities
             </div>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-[rgb(var(--accent))] shadow-[0_0_14px_rgb(var(--accent)_/_0.55)]" />
-            {variant === "drawer" && (
-              <button
-                onClick={onClose}
-                className="rounded-full border border-white/10 bg-white/10 px-2 py-1 text-xs text-zinc-200 hover:bg-white/15 transition"
-                aria-label="Close menu"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* nav */}
-        <div className="mt-6">
-          <div className="px-2 text-[11px] tracking-[0.22em] text-zinc-500">
-            NAV
-          </div>
-          <nav className="mt-2 space-y-1">
-            {nav.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={variant === "drawer" ? onClose : undefined}
-                className="flex items-center justify-between rounded-2xl px-3 py-2 text-sm text-zinc-200 hover:bg-white/5 transition"
-              >
-                <span>{item.label}</span>
-                <span className="text-xs text-zinc-500">↵</span>
-              </a>
-            ))}
-          </nav>
-        </div>
-
-        {/* resources */}
-        <div className="mt-6">
-          <div className="px-2 text-[11px] tracking-[0.22em] text-zinc-500">
-            RESOURCES
-          </div>
-          <nav className="mt-2 space-y-1">
-            {resources.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={variant === "drawer" ? onClose : undefined}
-                className="flex items-center justify-between rounded-2xl px-3 py-2 text-sm text-zinc-200 hover:bg-white/5 transition"
-              >
-                <span>{item.label}</span>
-                <span className="text-xs text-zinc-500">↗</span>
-              </a>
-            ))}
-          </nav>
-        </div>
-
-        {/* bottom */}
-        <div className="mt-auto pt-6">
-          <motion.a
-            whileTap={{ scale: 0.98 }}
-            href="#contact"
-            onClick={variant === "drawer" ? onClose : undefined}
-            className="mt-6 flex items-center justify-between rounded-2xl border border-white/10 bg-[rgb(var(--accent)_/_0.16)] px-4 py-3 text-sm text-white hover:bg-[rgb(var(--accent)_/_0.24)] transition"
-          >
-            <span>Get in touch</span>
-            <span className="text-xs text-white/80">⚡</span>
-          </motion.a>
-
-          <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
-            <span>v2</span>
-            <span>dark</span>
           </div>
         </div>
       </div>
-    </Wrapper>
+
+      {/* MAIN NAV */}
+      <nav className="mt-6 px-4 space-y-1">
+        {MAIN_NAV.map((item) => {
+          const active = isHome && item.id === activeSection;
+
+          return (
+            <a
+              key={item.label}
+              href={item.href}
+              className={[
+                "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition",
+                active
+                  ? "bg-white/10 text-white"
+                  : "text-zinc-300 hover:bg-white/5 hover:text-white",
+              ].join(" ")}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className="truncate">{item.label}</span>
+
+              {active && (
+                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.6)]" />
+              )}
+            </a>
+          );
+        })}
+      </nav>
+
+      {/* RESOURCES */}
+      <div className="mt-6 px-6 text-xs uppercase tracking-wider text-zinc-500">
+        Resources
+      </div>
+
+      <nav className="mt-2 px-4 space-y-1">
+        {RESOURCES_NAV.map((item) => {
+          const active = isHome && item.id === activeSection;
+
+          return (
+            <a
+              key={item.label}
+              href={item.href}
+              className={[
+                "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition",
+                active
+                  ? "bg-white/10 text-white"
+                  : "text-zinc-300 hover:bg-white/5 hover:text-white",
+              ].join(" ")}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className="truncate">{item.label}</span>
+
+              {active && (
+                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_18px_rgba(56,189,248,0.6)]" />
+              )}
+            </a>
+          );
+        })}
+      </nav>
+
+      <div className="flex-1" />
+
+      {/* CTA */}
+      <div className="px-6 pb-4">
+        <a
+          href="#contact"
+          className="
+            w-full rounded-xl
+            bg-gradient-to-r from-sky-500 to-blue-600
+            py-2.5 text-sm font-medium text-black
+            hover:from-sky-400 hover:to-blue-500 transition
+            flex items-center justify-center gap-2
+          "
+        >
+          <HiOutlineLightningBolt />
+          Get in touch
+        </a>
+      </div>
+
+      {/* FOOTER */}
+      <div className="flex items-center justify-between px-6 pb-5 text-zinc-400">
+        <button className="hover:text-white transition">
+          <HiOutlineMoon />
+        </button>
+        <button className="hover:text-white transition">
+          <HiOutlineSearch />
+        </button>
+        <button className="hover:text-white transition">
+          <HiOutlineLogin />
+        </button>
+      </div>
+    </aside>
   );
 }

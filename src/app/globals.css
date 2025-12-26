@@ -12,13 +12,18 @@ body {
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px; /* accounts for mobile topbar */
+}
+
 body {
   background: rgb(var(--bg));
   color: rgb(var(--fg));
 }
 
-/* IMPORTANT:
-   If you added any debug CSS like this, REMOVE IT:
-   * { outline: 1px solid white; }
-   * { border: 1px solid red; }
-*/
+@media (min-width: 1280px) {
+  html {
+    scroll-padding-top: 24px; /* desktop has no topbar */
+  }
+}
