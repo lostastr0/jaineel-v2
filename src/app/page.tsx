@@ -9,7 +9,8 @@ export default function Page() {
       <section className="pt-16 sm:pt-20">
         <div className="mx-auto w-full max-w-[900px] px-2 sm:px-0 text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+            {/* green dot */}
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             Open for opportunities
           </div>
 
@@ -22,12 +23,14 @@ export default function Page() {
           </p>
 
           <div className="mt-7 flex items-center justify-center gap-3">
+            {/* KEY BLUE BUTTON */}
             <a
               href="/projects"
               className="inline-flex items-center justify-center rounded-full bg-sky-500 px-5 py-2.5 text-sm font-medium text-black hover:bg-sky-400 transition"
             >
               View projects
             </a>
+
             <a
               href="#contact"
               className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white hover:bg-white/10 transition"
@@ -39,29 +42,26 @@ export default function Page() {
       </section>
 
       {/* GRID WRAPPER */}
-      <section id="projects" className="pt-10 sm:pt-12 pb-16">
+      <section className="pt-10 sm:pt-12 pb-16">
         <div className="mx-auto w-full max-w-[900px] px-2 sm:px-0 space-y-4 sm:space-y-6">
-          {/* FEATURED */}
+          {/* FEATURED (no glow) */}
           <article
             className="
               relative w-full overflow-hidden rounded-3xl
               border border-white/10
-              bg-gradient-to-br from-amber-900/30 via-black to-blue-900/30
-              shadow-[0_0_0_1px_rgba(255,255,255,0.04),0_20px_80px_rgba(0,0,0,0.65)]
+              bg-white/[0.03]
+              shadow-[0_0_0_1px_rgba(255,255,255,0.04)]
               flex flex-col
               min-h-[260px]
               sm:min-h-[320px]
               lg:w-[900px] lg:h-[450px] lg:min-h-0
             "
           >
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl" />
-              <div className="absolute -right-40 -bottom-40 h-80 w-80 rounded-full bg-sky-500/10 blur-3xl" />
-            </div>
-
+            {/* content */}
             <div className="relative z-10 flex flex-1 flex-col px-5 sm:px-8 pt-5 sm:pt-7">
               <div className="flex items-center justify-between">
                 <div className="text-sm font-semibold text-white/90">Featured</div>
+
                 <a
                   href="/projects"
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200 hover:bg-white/10 transition"
@@ -76,15 +76,15 @@ export default function Page() {
                 </div>
 
                 <h2 className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-                  Portfolio v2
+                  Password Strength Checker
                 </h2>
 
                 <p className="mt-3 max-w-[60ch] text-sm sm:text-base text-zinc-300">
-                  A product-style portfolio — curated projects, clean layout, and subtle motion.
+                  A Python tool that checks password strength and highlights weak patterns.
                 </p>
 
                 <div className="mt-5 flex flex-wrap gap-2">
-                  {["Next.js", "TypeScript", "Tailwind", "Framer Motion"].map((t) => (
+                  {["Python", "CLI", "Security"].map((t) => (
                     <span
                       key={t}
                       className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-zinc-200"
@@ -98,20 +98,26 @@ export default function Page() {
               <div className="flex-1" />
             </div>
 
+            {/* bottom bar */}
             <div className="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur px-5 sm:px-8 py-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <div className="text-sm font-semibold text-white/90 truncate">
-                    LostAstr0 Portfolio <span className="text-white/60">+</span>
+                    View the project page
                   </div>
                   <div className="text-xs text-zinc-400 truncate">
-                    Updating as I ship — new sections, cleaner layout, better motion.
+                    Write-up + usage + what I learned building it.
                   </div>
                 </div>
 
+                {/* KEY BLUE BUTTON */}
                 <a
                   href="/projects"
-                  className="shrink-0 inline-flex items-center justify-center rounded-full bg-sky-500 px-5 py-2 text-sm font-medium text-black hover:bg-sky-400 transition"
+                  className="
+                    shrink-0 inline-flex items-center justify-center
+                    rounded-full bg-sky-500 px-5 py-2 text-sm font-medium text-black
+                    hover:bg-sky-400 transition
+                  "
                 >
                   View projects
                 </a>
@@ -139,7 +145,7 @@ export default function Page() {
               </div>
 
               <div className="px-5 sm:px-6 pb-5 sm:pb-6">
-                <div className="h-[170px] rounded-2xl border border-white/10 bg-gradient-to-br from-sky-500/15 via-black to-indigo-500/10" />
+                <div className="h-[170px] rounded-2xl border border-white/10 bg-white/[0.03]" />
               </div>
             </article>
 
@@ -166,18 +172,8 @@ export default function Page() {
             </article>
           </div>
 
-          {/* Notes */}
-          <section id="notes" className="pt-2">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
-              <div className="text-sm font-semibold text-white/90">Notes</div>
-              <p className="mt-2 text-sm text-zinc-300">
-                Learning notes, experiments, and things I don&apos;t want to forget.
-              </p>
-            </div>
-          </section>
-
           <section id="about" className="pt-2">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
               <div className="text-sm font-semibold text-white/90">About</div>
               <p className="mt-2 text-sm text-zinc-300">
                 I&apos;m building skills in cyber security through hands-on projects, and documenting what I learn.
@@ -186,7 +182,7 @@ export default function Page() {
           </section>
 
           <section id="contact" className="pt-2">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
               <div className="text-sm font-semibold text-white/90">Contact</div>
               <p className="mt-2 text-sm text-zinc-300">Add your links / email here.</p>
             </div>

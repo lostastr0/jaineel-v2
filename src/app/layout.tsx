@@ -1,9 +1,10 @@
 import "./globals.css";
+import { ThemeProvider } from "@/lib/theme";
 import Shell from "@/components/Shell";
 
 export const metadata = {
-  title: "LostAstr0",
-  description: "Portfolio",
+  title: "Jaineel's Portfolio - LostAstr0",
+  description: "LostAstr0 by Jaineel",
 };
 
 export default function RootLayout({
@@ -12,9 +13,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-dvh bg-black text-white">
-        <Shell>{children}</Shell>
+    <html lang="en" data-theme="dark">
+      <body>
+        <ThemeProvider>
+          <Shell>{children}</Shell>
+        </ThemeProvider>
       </body>
     </html>
   );

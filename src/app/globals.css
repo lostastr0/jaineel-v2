@@ -1,12 +1,37 @@
 @import "tailwindcss";
 
-/* Optional: your site baseline */
+/* =========================================================
+   THEME TOKENS
+========================================================= */
 :root {
-  --bg: 0 0 0;
-  --fg: 255 255 255;
-  --accent: 59 130 246; /* blue-500 */
+  /* Dark (default) */
+  --bg: 10 10 12;         /* matte near-black */
+  --fg: 245 245 246;
+
+  --surface: 255 255 255; /* used in rgba(surface, alpha) */
+  --border: 255 255 255;
+
+  --muted: 155 155 165;
+  --accent: 59 130 246;   /* blue-500 */
+  --good: 34 197 94;      /* green-500 */
 }
 
+/* Light theme */
+html[data-theme="light"] {
+  --bg: 244 245 247;      /* soft neutral grey */
+  --fg: 24 24 28;
+
+  --surface: 255 255 255;
+  --border: 0 0 0;
+
+  --muted: 90 94 110;
+  --accent: 37 99 235;    /* blue-600 */
+  --good: 22 163 74;      /* green-600 */
+}
+
+/* =========================================================
+   BASE LAYOUT
+========================================================= */
 html,
 body {
   height: 100%;
@@ -14,7 +39,13 @@ body {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 110px; /* accounts for mobile topbar */
+  scroll-padding-top: 110px; /* mobile topbar */
+}
+
+@media (min-width: 1280px) {
+  html {
+    scroll-padding-top: 24px;
+  }
 }
 
 body {
@@ -22,8 +53,97 @@ body {
   color: rgb(var(--fg));
 }
 
-@media (min-width: 1280px) {
-  html {
-    scroll-padding-top: 24px; /* desktop has no topbar */
-  }
+/* =========================================================
+   REUSABLE SURFACES (SAFE)
+========================================================= */
+.surface {
+  background: rgba(var(--surface), 0.06);
+  border: 1px solid rgba(var(--border), 0.12);
+  box-shadow:
+    0 0 0 1px rgba(var(--border), 0.05),
+    0 20px 80px rgba(0, 0, 0, 0.25);
 }
+
+html[data-theme="light"] .surface {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 18px 60px rgba(0, 0, 0, 0.08);
+}
+
+/* Bars / footers */
+.surfaceBar {
+  background: rgba(var(--surface), 0.04);
+  border-top: 1px solid rgba(var(--border), 0.12);
+  backdrop-filter: blur(12px);
+}
+
+/* Pills */
+.pill {
+  background: rgba(var(--surface), 0.06);
+  border: 1px solid rgba(var(--border), 0.12);
+}
+
+.pill:hover {
+  background: rgba(var(--surface), 0.09);
+}
+
+/* =========================================================
+   BUTTONS & UTILS
+========================================================= */
+.primaryBtn {
+  background: rgb(var(--accent));
+  color: #000;
+}
+
+.primaryBtn:hover {
+  filter: brightness(1.05);
+}
+
+.goodDot {
+  background: rgb(var(--good));
+  box-shadow: 0 0 12px rgba(var(--good), 0.35);
+}
+
+.mutedText {
+  color: rgb(var(--muted));
+}
+
+/* =========================================================
+   LIGHT MODE REMAPS (TARGET ONLY YOUR EXISTING UTILITIES)
+   This avoids breaking layout while making light mode readable.
+========================================================= */
+
+/* Your sidebar/cards use bg-white/[0.06], border-white/15, ring-white/10, etc.
+   In light mode those become too faint, so remap them. */
+
+html[data-theme="light"] .bg-white\/\[0\.06\] { background-color: rgba(255,255,255,0.78) !important; }
+html[data-theme="light"] .bg-white\/\[0\.04\] { background-color: rgba(255,255,255,0.70) !important; }
+
+html[data-theme="light"] .bg-white\/10 { background-color: rgba(0,0,0,0.06) !important; }
+html[data-theme="light"] .bg-white\/5  { background-color: rgba(0,0,0,0.04) !important; }
+
+html[data-theme="light"] .border-white\/15 { border-color: rgba(0,0,0,0.12) !important; }
+html[data-theme="light"] .border-white\/12 { border-color: rgba(0,0,0,0.12) !important; }
+html[data-theme="light"] .border-white\/10 { border-color: rgba(0,0,0,0.12) !important; }
+
+html[data-theme="light"] .ring-white\/10 { --tw-ring-color: rgba(0,0,0,0.10) !important; }
+html[data-theme="light"] .ring-white\/12 { --tw-ring-color: rgba(0,0,0,0.12) !important; }
+
+/* “Glow” shadow looks heavy in light mode */
+html[data-theme="light"] .shadow-\[0_30px_120px_rgba\(0\,0\,0\,0\.45\)\] {
+  box-shadow: 0 18px 60px rgba(0,0,0,0.10) !important;
+}
+
+/* Text that’s hardcoded as white in components */
+html[data-theme="light"] .text-white { color: rgb(var(--fg)) !important; }
+html[data-theme="light"] .text-zinc-200 { color: rgb(var(--fg)) !important; }
+html[data-theme="light"] .text-zinc-300 { color: rgb(var(--fg)) !important; }
+html[data-theme="light"] .text-zinc-400 { color: rgb(var(--muted)) !important; }
+html[data-theme="light"] .text-zinc-500 { color: rgb(var(--muted)) !important; }
+
+html[data-theme="light"] .text-white\/80 { color: rgb(var(--fg)) !important; opacity: 0.9 !important; }
+html[data-theme="light"] .text-white\/60 { color: rgb(var(--fg)) !important; opacity: 0.75 !important; }
+html[data-theme="light"] .text-white\/50 { color: rgb(var(--muted)) !important; opacity: 1 !important; }
+html[data-theme="light"] .text-white\/40 { color: rgb(var(--muted)) !important; opacity: 1 !important; }
+html[data-theme="light"] .text-white\/35 { color: rgb(var(--muted)) !important; opacity: 1 !important; }
