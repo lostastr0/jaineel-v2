@@ -1,10 +1,10 @@
+// src/app/layout.tsx
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme";
-import Shell from "@/components/Shell";
 
 export const metadata = {
-  title: "Jaineel's Portfolio - LostAstr0",
-  description: "LostAstr0 by Jaineel",
+  title: "Jaineel",
+  description: "Cyber security student portfolio",
 };
 
 export default function RootLayout({
@@ -15,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark">
       <body>
-        <ThemeProvider>
-          <Shell>{children}</Shell>
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

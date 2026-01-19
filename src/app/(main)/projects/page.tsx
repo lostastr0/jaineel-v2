@@ -1,26 +1,33 @@
 // src/app/projects/page.tsx
-
 "use client";
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import ProjectCard from "@/components/ProjectCard";
-import { PROJECTS, ProjectStatus } from "@/data/projects";
+import ProjectModal from "@/components/ProjectModal";
+import { PROJECTS, Project, ProjectStatus } from "@/data/projects";
 import { getStatusStyle } from "@/lib/projectColours";
 
 type FilterKey = "All" | ProjectStatus;
 
-const FILTERS: FilterKey[] = ["All", "Completed", "In progress", "Planned", "Ongoing", "Idea"];
+const FILTERS: FilterKey[] = [
+  "All",
+  "Completed",
+  "In progress",
+  "Planned",
+  "Ongoing",
+  "Idea",
+];
 
 export default function ProjectsPage() {
   const [filter, setFilter] = useState<FilterKey>("All");
+  const [selected, setSelected] = useState<Project | null>(null);
 
   const filtered = useMemo(() => {
     if (filter === "All") return PROJECTS;
     return PROJECTS.filter((p) => p.status === filter);
   }, [filter]);
 
-  // "Pinned" = first two projects (same as your current approach)
   const pinned = filtered.slice(0, 2);
   const rest = filtered.slice(2);
 
@@ -30,9 +37,12 @@ export default function ProjectsPage() {
         {/* header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-semibold text-white">Projects</h1>
+            <h1 className="text-3xl sm:text-4xl font-semibold text-white">
+              Projects
+            </h1>
             <p className="mt-2 text-sm text-zinc-300 max-w-[70ch]">
-              Stuff I’m building while studying cyber security — small projects, notes, and experiments.
+              Stuff I’m building while studying cyber security — small projects,
+              notes, and experiments.
             </p>
           </div>
 
@@ -44,7 +54,7 @@ export default function ProjectsPage() {
           </Link>
         </div>
 
-        {/* filters row (tiny dot + active glow) */}
+        {/* filters */}
         <div className="mt-6 flex flex-wrap items-center gap-2">
           <span className="text-xs text-zinc-500">Filter:</span>
 
@@ -53,7 +63,10 @@ export default function ProjectsPage() {
 
             const style =
               k === "All"
-                ? { dot: "bg-sky-400", glow: "shadow-[0_0_18px_rgba(56,189,248,0.35)]" }
+                ? {
+                    dot: "bg-sky-400",
+                    glow: "shadow-[0_0_18px_rgba(56,189,248,0.35)]",
+                  }
                 : (() => {
                     const s = getStatusStyle(k);
                     return { dot: s.dot, glow: s.dotGlow };
@@ -66,18 +79,24 @@ export default function ProjectsPage() {
                 className={`
                   inline-flex items-center gap-2 rounded-full
                   border px-3 py-1 text-xs transition
-                  ${active ? "border-white/20 bg-white/10 text-white" : "border-white/10 bg-white/5 text-zinc-200 hover:bg-white/10"}
+                  ${
+                    active
+                      ? "border-white/20 bg-white/10 text-white"
+                      : "border-white/10 bg-white/5 text-zinc-200 hover:bg-white/10"
+                  }
                 `}
               >
-                <span className={`h-1.5 w-1.5 rounded-full ${style.dot} ${active ? style.glow : ""}`} />
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${style.dot} ${
+                    active ? style.glow : ""
+                  }`}
+                />
                 {k}
               </button>
             );
           })}
 
-          <div className="ml-auto text-xs text-zinc-500">
-            {filtered.length} shown
-          </div>
+          <div className="ml-auto text-xs text-zinc-500">{filtered.length} shown</div>
         </div>
 
         {/* pinned */}
@@ -89,7 +108,11 @@ export default function ProjectsPage() {
 
             <div className="mt-3 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
               {pinned.map((p) => (
-                <ProjectCard key={p.slug} project={p} />
+                <ProjectCard
+                  key={p.slug}
+                  project={p}
+                  onOpen={() => setSelected(p)} // ✅ THIS is what opens the modal
+                />
               ))}
             </div>
           </div>
@@ -104,7 +127,11 @@ export default function ProjectsPage() {
 
             <div className="mt-3 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
               {rest.map((p) => (
-                <ProjectCard key={p.slug} project={p} />
+                <ProjectCard
+                  key={p.slug}
+                  project={p}
+                  onOpen={() => setSelected(p)} // ✅ THIS too
+                />
               ))}
             </div>
           </div>
@@ -113,7 +140,8 @@ export default function ProjectsPage() {
         {/* footer */}
         <div className="mt-10 text-xs text-zinc-500">
           Tip: add new projects in{" "}
-          <span className="text-zinc-300">src/data/projects.ts</span> — the grid and pages update automatically.
+          <span className="text-zinc-300">src/data/projects.ts</span> — the grid
+          updates automatically.
         </div>
 
         <div className="mt-6">
@@ -122,6 +150,13 @@ export default function ProjectsPage() {
           </Link>
         </div>
       </section>
+
+      {/* ✅ Modal mount (must be here somewhere on the page) */}
+      <ProjectModal
+        open={!!selected}
+        project={selected}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }
