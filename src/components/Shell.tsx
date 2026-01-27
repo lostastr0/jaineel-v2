@@ -7,11 +7,13 @@ import Sidebar from "@/components/Sidebar";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/", label: "Home", icon: "⌂" },
+  { href: "/projects", label: "Projects", icon: "▢" },
+  { href: "/labs", label: "Labs", icon: "🧪" },
+  { href: "/about", label: "About", icon: "👤" },
+  { href: "/contact", label: "Contact", icon: "✉" },
 ];
+
 
 export default function Shell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);

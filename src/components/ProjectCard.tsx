@@ -18,18 +18,20 @@ export default function ProjectCard({
       type="button"
       onClick={onOpen}
       className={[
-        "group text-left w-full overflow-hidden rounded-3xl",
+        "group relative text-left w-full overflow-hidden rounded-3xl",
         "border border-white/10 bg-white/[0.03]",
         "shadow-[0_0_0_1px_rgba(255,255,255,0.04)]",
-        "transition duration-200 hover:-translate-y-[1px] hover:border-white/15 hover:bg-white/[0.04]",
+        "transition duration-200",
+        "hover:-translate-y-[1px] hover:border-white/15 hover:bg-white/[0.04]",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/40",
       ].join(" ")}
     >
-      <div className="relative h-24 overflow-hidden">
-        <div className="absolute inset-0 opacity-80" />
-        <div className={`absolute inset-0 ${s.banner}`} />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent" />
+      {/* subtle status glow (very light) */}
+      <div className={`pointer-events-none absolute inset-0 opacity-[0.22] ${s.banner}`} />
 
-        <div className="absolute left-4 top-4">
+      {/* top bar */}
+      <div className="relative px-4 pt-4">
+        <div className="flex items-center justify-between gap-3">
           <span
             className={[
               "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs",
@@ -39,27 +41,29 @@ export default function ProjectCard({
             <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
             {project.status}
           </span>
+
+          {/* Replace ↗ with “View” pill (because it opens a modal) */}
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] text-white/70 opacity-0 translate-y-[1px] transition group-hover:opacity-100 group-hover:translate-y-0">
+            View
+          </span>
         </div>
       </div>
 
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="text-sm font-semibold text-white/90 truncate">
-              {project.title}
-            </div>
-            <div className="mt-1 text-xs text-zinc-400 line-clamp-2">
-              {project.description}
-            </div>
+      {/* content */}
+      <div className="relative px-4 pb-4 pt-4">
+        <div className="min-w-0">
+          <div className="text-sm font-semibold text-white/90 truncate">
+            {project.title}
           </div>
 
-          <span className="text-white/25 group-hover:text-white/45 transition">
-            ↗
-          </span>
+          <div className="mt-2 text-xs text-zinc-400 leading-relaxed line-clamp-3">
+            {project.description}
+          </div>
         </div>
 
+        {/* tags */}
         {project.tags?.length ? (
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             {project.tags.slice(0, 3).map((t) => (
               <span
                 key={t}
@@ -71,10 +75,20 @@ export default function ProjectCard({
           </div>
         ) : null}
 
-        <div className="mt-4 text-xs text-zinc-500 group-hover:text-zinc-300 transition">
-          Click to view details
+        {/* bottom row */}
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-xs text-zinc-500 group-hover:text-zinc-300 transition">
+            Click to view details
+          </div>
+
+          <span className="text-white/30 group-hover:text-white/55 transition">
+            →
+          </span>
         </div>
       </div>
+
+      {/* tiny hairline bottom glow */}
+      <div className="pointer-events-none h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </button>
   );
 }

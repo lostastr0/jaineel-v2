@@ -1,63 +1,52 @@
-// src/app/projects/page.tsx
+// src/app/(main)/labs/page.tsx
 "use client";
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+
 import ProjectCard from "@/components/ProjectCard";
 import ProjectModal from "@/components/ProjectModal";
-import { PROJECTS, Project, ProjectStatus } from "@/data/projects";
+
+// Reuse the same modal/card by mapping Labs -> Project shape
+import { LABS, LabStatus, Lab } from "@/data/labs";
+import { Project, ProjectStatus } from "@/data/projects";
 import { getStatusStyle } from "@/lib/projectColours";
 
-type FilterKey = "All" | ProjectStatus;
+type FilterKey = "All" | LabStatus;
 
-const FILTERS: FilterKey[] = [
-  "All",
-  "Completed",
-  "In progress",
-  "Planned",
-  "Ongoing",
-  "Idea",
-];
+const FILTERS: FilterKey[] = ["All", "Completed", "In progress", "Planned"];
 
-export default function ProjectsPage() {
+function labToProject(lab: Lab): Project {
+  // ProjectStatus type includes these, so it's safe:
+  const status = lab.status as ProjectStatus;
+
+  return {
+    slug: lab.slug,
+    title: lab.title,
+    description: lab.description,
+    status,
+    tags: lab.tags,
+    blurb: lab.blurb,
+    highlights: lab.highlights,
+    links: lab.links,
+    // Your ProjectModal uses meta if present
+    meta: lab.meta,
+  } as Project;
+}
+
+export default function LabsPage() {
   const [filter, setFilter] = useState<FilterKey>("All");
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Project | null>(null);
+
+  const mapped = useMemo(() => LABS.map(labToProject), []);
 
   const filtered = useMemo(() => {
-    if (filter === "All") return PROJECTS;
-    return PROJECTS.filter((p) => p.status === filter);
-  }, [filter]);
+    if (filter === "All") return mapped;
+    return mapped.filter((p) => p.status === filter);
+  }, [filter, mapped]);
 
-  // Pinned = first two in current filtered list
   const pinned = filtered.slice(0, 2);
   const rest = filtered.slice(2);
-
-  // Selected project derived from current filtered list (so modal nav matches filter)
-  const selectedProject: Project | null = useMemo(() => {
-    if (!selectedSlug) return null;
-    return filtered.find((p) => p.slug === selectedSlug) ?? null;
-  }, [selectedSlug, filtered]);
-
-  const selectedIndex = useMemo(() => {
-    if (!selectedSlug) return -1;
-    return filtered.findIndex((p) => p.slug === selectedSlug);
-  }, [selectedSlug, filtered]);
-
-  const hasPrev = selectedIndex > 0;
-  const hasNext = selectedIndex >= 0 && selectedIndex < filtered.length - 1;
-
-  const openProject = (p: Project) => setSelectedSlug(p.slug);
-  const closeModal = () => setSelectedSlug(null);
-
-  const goPrev = () => {
-    if (!hasPrev) return;
-    setSelectedSlug(filtered[selectedIndex - 1].slug);
-  };
-
-  const goNext = () => {
-    if (!hasNext) return;
-    setSelectedSlug(filtered[selectedIndex + 1].slug);
-  };
 
   return (
     <div className="relative w-full">
@@ -66,11 +55,11 @@ export default function ProjectsPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl font-semibold text-white">
-              Projects
+              Labs
             </h1>
             <p className="mt-2 text-sm text-zinc-300 max-w-[70ch]">
-              Stuff I’m building while studying cyber security — small projects,
-              notes, and experiments.
+              Hands-on practice — small exercises, tooling experiments, and repeatable
+              workflows. Less polish, more learning.
             </p>
           </div>
 
@@ -96,7 +85,7 @@ export default function ProjectsPage() {
                     glow: "shadow-[0_0_18px_rgba(56,189,248,0.35)]",
                   }
                 : (() => {
-                    const s = getStatusStyle(k);
+                    const s = getStatusStyle(k as ProjectStatus);
                     return { dot: s.dot, glow: s.dotGlow };
                   })();
 
@@ -138,7 +127,11 @@ export default function ProjectsPage() {
 
             <div className="mt-3 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
               {pinned.map((p) => (
-                <ProjectCard key={p.slug} project={p} onOpen={() => openProject(p)} />
+                <ProjectCard
+                  key={p.slug}
+                  project={p}
+                  onOpen={() => setSelected(p)}
+                />
               ))}
             </div>
           </div>
@@ -148,12 +141,16 @@ export default function ProjectsPage() {
         {rest.length > 0 && (
           <div className="mt-10">
             <div className="text-xs uppercase tracking-wider text-zinc-500">
-              All projects
+              All labs
             </div>
 
             <div className="mt-3 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
               {rest.map((p) => (
-                <ProjectCard key={p.slug} project={p} onOpen={() => openProject(p)} />
+                <ProjectCard
+                  key={p.slug}
+                  project={p}
+                  onOpen={() => setSelected(p)}
+                />
               ))}
             </div>
           </div>
@@ -161,29 +158,29 @@ export default function ProjectsPage() {
 
         {/* footer */}
         <div className="mt-10 text-xs text-zinc-500">
-          Tip: add new projects in{" "}
-          <span className="text-zinc-300">src/data/projects.ts</span> — the grid
+          Tip: add new labs in{" "}
+          <span className="text-zinc-300">src/data/labs.ts</span> — the grid
           updates automatically.
         </div>
 
-        <div className="mt-6">
-          <Link href="/" className="text-sm text-zinc-300 hover:text-white transition">
-            ← Back to home
+        <div className="mt-6 flex flex-wrap gap-4">
+          <Link
+            href="/projects"
+            className="text-sm text-zinc-300 hover:text-white transition"
+          >
+            ← Projects
+          </Link>
+          <Link
+            href="/"
+            className="text-sm text-zinc-300 hover:text-white transition"
+          >
+            Home
           </Link>
         </div>
       </section>
 
-      {/* Modal */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={closeModal}
-        onPrev={goPrev}
-        onNext={goNext}
-        hasPrev={hasPrev}
-        hasNext={hasNext}
-        index={selectedIndex}
-        total={filtered.length}
-      />
+      {/* modal */}
+      <ProjectModal project={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
